@@ -1,0 +1,137 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+{% include 'toast_msg.html' %}
+<div class="d-flex bd-highlight">
+    <div class="p-2 w-100 bd-highlight"><h1>Personal Information</h1></div>
+    <form action="{% url 'get_personal_information' %}" method="post" class="form-signin">
+        {% csrf_token %}
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <input type="text" class="form-control" placeholder="Search.." name="offender_id">
+            </div>
+            <div class="p-2">
+                <button class="btn btn-info">search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container" style="background-color:#ECECEC;">
+    {% if offender_obj %}
+    {% include 'offender_inh.html' %}
+    <form action="{% url 'personal_information' %}" method="post" class="form-signin" id="submit_form">
+        {% csrf_token %}
+        <div class="row">
+            <h3>Personal Information</h3>
+            <hr>
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="country">Country</label></div>
+                    <div class="col-md-6">
+                        <input id="country" type="text" value="{{ personal_obj.country }}"
+                               name="country" class="personal_text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="city">City</label></div>
+                    <div class="col-md-6"><input id="city" type="text" value="{{ personal_obj.city }}" name="city"
+                                                 class="personal_text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="state">State</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input id="state" type="text" value="{{ personal_obj.state }}" name="state"
+                               class="personal_text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="mobile">Mobile</label></div>
+                    <div class="col-md-6"><input id="mobile" type="text" value="{{ personal_obj.mobile }}"
+                                                 name="mobile" class="personal_text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="email">Email</label></div>
+                    <div class="col-md-6"><input id="email" type="text" value="{{ personal_obj.email }}" name="email"
+                                                 class="personal_text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" hidden value="{{ offender_obj.offender_id }}" name="offender_id">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--        EDIT AND UPDATE BUTTONS       -->
+        <div class="row mb-2 d-flex justify-content-center">
+            <div class="col">
+            </div>
+            <div class="col order-12">
+                <div class="d-flex flex-row">
+                    <div class="p-2">
+                        <input type="button" class="btn btn-primary"  value="Edit" id="edit_btn">
+                    </div>
+                    <div class="p-2">
+                        <input type="submit"  class="btn btn-success" value="Update" id="submit_btn">
+                    </div>
+                    <div class="p-2">
+                        <button type="button"  class="btn btn-danger" id="cancel_btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col order-1">
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <div class="row ">
+        <div class="col-12 mt-2">
+            Search Offender Profile to get data
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <!--            empty row to display some space -->
+    </div>
+</div>
+<script>
+     $(document).ready(function(){
+    $(".personal_text").prop("disabled",true);
+    $("#submit_btn").hide();
+    $("#edit_btn").click(function(){
+        $(".personal_text").prop("disabled",false);
+        $("#submit_btn").show();
+        $("#edit_btn").hide();
+    });
+    $("#cancel_btn").click(function(){
+        $("#submit_btn").hide();
+        $("#edit_btn").show();
+        $(".personal_text").prop("disabled",true);
+    });
+ });
+
+
+</script>
+{% endblock %}

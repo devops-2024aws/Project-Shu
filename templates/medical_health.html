@@ -1,0 +1,226 @@
+{}
+{% load static %}
+{% block content %}
+{% include 'toast_msg.html' %}
+<div class="d-flex bd-highlight">
+    <div class="p-2 w-100 bd-highlight"><h1>Offender Medical Health Information</h1></div>
+    <form action="{% url 'get_medical_health_information' %}" method="post" class="form-signin">
+        {% csrf_token %}
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <input type="text" class="form-control" placeholder="Search.." name="offender_id">
+            </div>
+            <div class="p-2">
+                <button class="btn btn-info">search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container" style="background-color:#ECECEC;">
+    <!--  DON'T CHANGE ANY IN HERE  -->
+    {% if offender_obj %}
+    {% include 'offender_inh.html' %}
+    <!--  CHANGE AS PER MODULE  -->
+    <form action="{% url 'medical_health' %}" method="post" class="form-signin" id="submit_form">
+        {% csrf_token %}
+        <div class="row">
+            <div class="select-box">
+                <div class="row">
+                    <div class="col-6">
+                        <h3>Medical Information</h3>
+                    </div>
+                    <div class="col-6 d-flex justify-content-end">
+                        <input type='button' value='Add Record' id='addButton'>&nbsp;&nbsp;
+                        <input type='button' value='Remove Record' id='removeButton'>
+                        <input type="text" hidden value="{{ offender_obj.offender_id }}" name="offender_id">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            {% for medical_health in medical_health_obj %}
+            <div id="row">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="health_issue">Health Issue</label>
+                            <textarea class="form-control personal_text" name="health_issue" id="health_issue"
+                                      placeholder="Health Issue">{{ medical_health.health_issue }}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control personal_text" name="status">
+                                {% if medical_health.status == "Active" %}
+                                <option value="Active" selected>Active</option>
+                                <option value="Inactive">Inactive</option>
+                                {% elif medical_health.status == "Inactive" %}
+                                <option value="Active">Active</option>
+                                <option value="Inactive" selected>Inactive</option>
+                                {% else %}
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="condition">Condition</label>
+                            <select class="form-control personal_text" name="condition">
+                                {% if medical_health.condition == "Good" %}
+                                <option value="Good" selected>Good</option>
+                                <option value="Critical">Critical</option>
+                                <option value="Moderate">Moderate</option>
+                                {% elif medical_health.condition == "Critical" %}
+                                <option value="Good">Good</option>
+                                <option value="Critical" selected>Critical</option>
+                                <option value="Moderate">Moderate</option>
+                                {% elif medical_health.condition == "Moderate" %}
+                                <option value="Good">Good</option>
+                                <option value="Critical">Critical</option>
+                                <option value="Moderate" selected>Moderate</option>
+                                {% else %}
+                                <option selected>------Select-----</option>
+                                <option value="Good">Good</option>
+                                <option value="Critical">Critical</option>
+                                <option value="Moderate">Moderate</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="effective_date">Effective Date</label>
+                            <input type="date" class="form-control personal_text" name="effective_date"
+                                   id="effective_date"
+                                   value="{{ medical_health.effective_date|date:'Y-m-d' }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3" hidden>
+                        <div class="form-group">
+                            <input type="text" class="form-control personal_text" name="medical_id"
+                                   id="medical_id"
+                                   value="{{ medical_health.medical_id }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 delete_btn">
+                        <div class="form-group mt-2">
+                            <a href="/delete_medical_health/{{medical_health.medical_id}}/"
+                               class="btn btn-danger mt-2 delete_btn">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div id="row-container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="health_issue">Health Issue</label>
+                            <textarea class="form-control personal_text" name="health_issue" id="health_issue"
+                                      placeholder="Health Issue"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control personal_text" name="status" id="status">
+                                <option selected>-----Select----</option>
+                                {% for h_status in health_status %}
+                                <option value="{{ h_status }}">{{ h_status }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="condition">Condition</label>
+                            <select class="form-control personal_text" name="condition" id="condition">
+                                <option selected>-----Select----</option>
+                                {% for h_con in health_condition %}
+                                <option value="{{ h_con }}">{{ h_con }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="effective_date">Effective Date</label>
+                            <input type="date" class="form-control personal_text" name="effective_date"
+                                   id="effective_date"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3" hidden>
+                        <div class="form-group">
+                            <input type="text" class="form-control personal_text" name="medical_id"
+                                   id="medical_id"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--        EDIT AND UPDATE BUTTONS       -->
+        <div class="row mb-2 d-flex justify-content-center">
+            <div class="col">
+            </div>
+            <div class="col order-12">
+                <div class="d-flex flex-row">
+                    <div class="p-2">
+                        <input type="button" class="btn btn-primary" value="Edit" id="edit_btn">
+                    </div>
+                    <div class="p-2">
+                        <input type="submit"  class="btn btn-success" value="Update" id="submit_btn">
+                    </div>
+                    <div class="p-2">
+                        <button type="button" class="btn btn-danger"  id="cancel_btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col order-1">
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <div class="row ">
+        <div class="col-12 mt-2">
+            Search Offender Profile to get data
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <!--            empty row to display some space -->
+    </div>
+</div>
+<script>
+    var row = $('#row-container .row:eq(0)').clone();
+    $('#addButton').data('row',row);
+    $('#addButton').click(function(){
+    $('#row-container').append($(this).data('row').clone());
+    });
+    $('#removeButton').click(function(){
+    $('#row-container .row').eq(  $('#row-container .row').length-1 ).remove();
+    });
+
+     $(document).ready(function(){
+    $(".personal_text").prop("disabled",true);
+    $("#submit_btn").hide();
+    $(".delete_btn").hide();
+    $("#edit_btn").click(function(){
+        $(".personal_text").prop("disabled",false);
+        $("#submit_btn").show();
+        $("#edit_btn").hide();
+        $(".delete_btn").show();
+    });
+    $("#cancel_btn").click(function(){
+        $("#submit_btn").hide();
+        $("#edit_btn").show();
+        $(".delete_btn").hide();
+        $(".personal_text").prop("disabled",true);
+    });
+ });
+
+
+</script>
+{% endblock %}

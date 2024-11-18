@@ -1,0 +1,125 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+{% include 'toast_msg.html' %}
+<div class="d-flex bd-highlight">
+    <div class="p-2 w-100 bd-highlight"><h1>Incident Information</h1></div>
+    <form action="{% url 'get_incident_information' %}" method="post" class="form-signin">
+        {% csrf_token %}
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <input type="text" class="form-control" placeholder="Search.." name="offender_id">
+            </div>
+            <div class="p-2">
+                <button class="btn btn-info">search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container" style="background-color:#ECECEC;">
+    {% if offender_obj %}
+    {% include 'offender_inh.html' %}
+    <form action="{% url 'incident' %}" method="post" class="form-signin" id="submit_form">
+        {% csrf_token %}
+        <div class="row">
+            <h3>Incident Information</h3>
+            <hr>
+            <input hidden type="text" value="{{ offender_obj.offender_id }}"
+                   name="offender_id" class="personal_text">
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="incident_type">Incident Type</label></div>
+                    <div class="col-md-6">
+                        <input id="incident_type" type="text" value="{{ incident_obj.incident_type }}"
+                               name="incident_type" class="personal_text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="reported_by">Reported By</label></div>
+                    <div class="col-md-6">
+                        <input id="reported_by" type="text" value="{{ incident_obj.reported_by }}"
+                               name="reported_by"
+                               class="personal_text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="reported_date">Reported Date</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input id="reported_date" type="date" value="{{ incident_obj.reported_date|date:'Y-m-d' }}"
+                               name="reported_date"
+                               class="personal_text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="incident_details">Incident Details</label></div>
+                    <div class="col-md-6"><input id="incident_details" type="text"
+                                                 value="{{ incident_obj.incident_details }}"
+                                                 name="incident_details" class="personal_text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--        EDIT AND UPDATE BUTTONS       -->
+        <div class="row mb-2 d-flex justify-content-center">
+            <div class="col">
+            </div>
+            <div class="col order-12">
+                <div class="d-flex flex-row">
+                    <div class="p-2">
+                        <input type="button" class="btn btn-primary"  value="Edit" id="edit_btn">
+                    </div>
+                    <div class="p-2">
+                        <input type="submit"  class="btn btn-success" value="Update" id="submit_btn">
+                    </div>
+                    <div class="p-2">
+                        <button type="button"  class="btn btn-danger" id="cancel_btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col order-1">
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <div class="row ">
+        <div class="col-12 mt-2">
+            Search Offender Profile to get data
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <!--            empty row to display some space -->
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+   $(".personal_text").prop("disabled",true);
+   $("#submit_btn").hide();
+   $("#edit_btn").click(function(){
+       $(".personal_text").prop("disabled",false);
+       $("#submit_btn").show();
+       $("#edit_btn").hide();
+   });
+   $("#cancel_btn").click(function(){
+       $("#submit_btn").hide();
+       $("#edit_btn").show();
+       $(".personal_text").prop("disabled",true);
+   });
+});
+
+
+</script>
+{% endblock %}

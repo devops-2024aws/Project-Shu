@@ -1,0 +1,236 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+{% include 'toast_msg.html' %}
+<div class="d-flex bd-highlight">
+    <div class="p-2 w-100 bd-highlight"><h1>Court Appointments</h1></div>
+    <form action="{% url 'get_court_appointments' %}" method="post" class="form-signin">
+        {% csrf_token %}
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <input type="text" class="form-control" placeholder="Search.." name="offender_id">
+            </div>
+            <div class="p-2">
+                <button class="btn btn-info">search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container" style="background-color:#ECECEC;">
+    <!--    -->
+    {% if offender_obj %}
+    {% include 'offender_inh.html' %}
+    <form action="{% url 'court_appointments' %}" method="post" class="form-signin" id="submit_form">
+        {% csrf_token %}
+        <div class="row">
+            <div class="select-box">
+                <div class="row">
+                    <div class="col-6">
+                        <h3>Court Appointments</h3>
+                    </div>
+                    <div class="col-6 d-flex justify-content-end">
+                        <input type='button' value='Add Record' id='addButton'>&nbsp;&nbsp;
+                        <input type='button' value='Remove Record' id='removeButton'>
+                        <input type="text" hidden value="{{ offender_obj.offender_id }}" name="offender_id">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            {% for court_appointment in court_appointments %}
+            <div id="row">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="court">Court</label>
+                            <input type="text" class="form-control personal_text" name="court" id="court"
+                                   placeholder="Court" value="{{ court_appointment.court }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="judge_name">Judge Name</label>
+                            <input type="text" class="form-control personal_text" name="judge_name"
+                                   id="judge_name"
+                                   placeholder="Judge Name" value="{{ court_appointment.judge_name }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="reason">Reason</label>
+                            <input type="text" class="form-control personal_text" name="reason" id="reason"
+                                   placeholder="Reason" value="{{ court_appointment.reason }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="assigned_officers">Assigned Officers</label>
+                            <input type="text" class="form-control personal_text" name="assigned_officers"
+                                   id="assigned_officers"
+                                   placeholder="assigned_officers" value="{{ court_appointment.assigned_officers }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="scheduled_datetime">End Date</label>
+                            <input type="datetime-local" class="form-control personal_text" name="scheduled_datetime"
+                                   id="scheduled_datetime"
+                                   value="{{ court_appointment.scheduled_datetime|date:'Y-m-d H:i' }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control personal_text" name="status" id="status">
+                                {% if court_appointment.status == "Processed" %}
+                                <option value="Processed" selected>Processed</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                {% elif court_appointment.status == "Cancelled" %}
+                                <option value="Processed">Processed</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled" selected>Cancelled</option>
+                                {% elif court_appointment.status == "Completed" %}
+                                <option value="Processed">Processed</option>
+                                <option value="Completed" selected>Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                {% else %}
+                                <option value="Processed">Processed</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3" hidden>
+                        <div class="form-group">
+                            <input type="text" class="form-control personal_text" name="appointment_id"
+                                   placeholder="Reason" value="{{ court_appointment.appointment_id }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 delete_btn">
+                        <div class="form-group mt-2">
+                            <a href="/delete_court_appointment/{{court_appointment.appointment_id}}/"
+                               class="btn btn-danger mt-2 delete_btn">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div id="row-container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="court">Court</label>
+                            <input type="text" class="form-control personal_text" name="court" id="court"
+                                   placeholder="Court"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="judge_name">Judge Name</label>
+                            <input type="text" class="form-control personal_text" name="judge_name"
+                                   id="judge_name" placeholder="Judge Name"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="reason">Reason</label>
+                            <input type="text" class="form-control personal_text" name="reason" id="reason"
+                                   placeholder="Reason"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="assigned_officers">Assigned Officers</label>
+                            <input type="text" class="form-control personal_text" name="assigned_officers"
+                                   id="assigned_officers" placeholder="Assigned Officers"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="scheduled_datetime">Scheduled Date & Time</label>
+                            <input type="datetime-local" class="form-control personal_text" name="scheduled_datetime"
+                                   id="scheduled_datetime"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control personal_text" name="status" id="status">
+                                <option value="Processed">Processed</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3" hidden>
+                            <div class="form-group">
+                                <input type="text" class="form-control personal_text" name="appointment_id"
+                                       placeholder="Reason" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--        EDIT AND UPDATE BUTTONS       -->
+            <div class="row mb-2 d-flex justify-content-center">
+                <div class="col">
+                </div>
+                <div class="col order-12">
+                    <div class="d-flex flex-row">
+                        <div class="p-2">
+                            <input type="button"  class="btn btn-primary" value="Edit" id="edit_btn">
+                        </div>
+                        <div class="p-2">
+                            <input type="submit"  class="btn btn-success" value="Update" id="submit_btn">
+                        </div>
+                        <div class="p-2">
+                            <button type="button" class="btn btn-danger"  id="cancel_btn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col order-1">
+                </div>
+            </div>
+    </form>
+    {% else %}
+    <div class="row ">
+        <div class="col-12 mt-2">
+            Search Offender Profile to get data
+        </div>
+    </div>
+    <div class="row">
+        <!--            empty row to display some space -->
+    </div>
+    {% endif %}
+</div>
+<script>
+    var row = $('#row-container .row:eq(0)').clone();
+    $('#addButton').data('row',row);
+    $('#addButton').click(function(){
+    $('#row-container').append($(this).data('row').clone());
+    });
+    $('#removeButton').click(function(){
+    $('#row-container .row').eq(  $('#row-container .row').length-1 ).remove();
+    });
+
+     $(document).ready(function(){
+    $(".personal_text").prop("disabled",true);
+    $("#submit_btn").hide();
+    $(".delete_btn").hide();
+    $("#edit_btn").click(function(){
+        $(".personal_text").prop("disabled",false);
+        $("#submit_btn").show();
+        $("#edit_btn").hide();
+        $(".delete_btn").show();
+    });
+    $("#cancel_btn").click(function(){
+        $("#submit_btn").hide();
+        $("#edit_btn").show();
+        $(".delete_btn").hide();
+        $(".personal_text").prop("disabled",true);
+    });
+ });
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+{% include 'toast_msg.html' %}
+<div class="d-flex bd-highlight">
+    <div class="p-2 w-100 bd-highlight"><h1>Education Information</h1></div>
+    <form action="{% url 'get_education_information' %}" method="post" class="form-signin">
+        {% csrf_token %}
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <input type="text" class="form-control" placeholder="Search.." name="offender_id">
+            </div>
+            <div class="p-2">
+                <button class="btn btn-info">search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container" style="background-color:#ECECEC;">
+    <!--    -->
+    {% if offender_obj %}
+    {% include 'offender_inh.html' %}
+    <form action="{% url 'education' %}" method="post" class="form-signin" id="submit_form">
+        {% csrf_token %}
+        <div class="row">
+            <div class="select-box">
+                <div class="row">
+                    <div class="col-6">
+                        <h3>Education Information</h3>
+                    </div>
+                    <div class="col-6 d-flex justify-content-end">
+                        <input type='button' value='Add Record' id='addButton'>&nbsp;&nbsp;
+                        <input type='button' value='Remove Record' id='removeButton'>
+                        <input type="text" hidden value="{{ offender_obj.offender_id }}" name="offender_id">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            {% for education in education_obj %}
+            <div id="row">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="course_type">Course Type</label>
+                            <input type="text" class="form-control personal_text" name="course_type" id="course_type"
+                                   placeholder="Course Type" value="{{ education.course_type }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="institute_name">Institute Name</label>
+                            <input type="text" class="form-control personal_text" name="institute_name"
+                                   id="institute_name"
+                                   placeholder="Designation" value="{{ education.institute_name }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="branch">Branch</label>
+                            <input type="text" class="form-control personal_text" name="branch" id="branch"
+                                   placeholder="Company Name" value="{{ education.branch }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="start_date">Start Date</label>
+                            <input type="date" class="form-control personal_text" name="start_date" id="start_date"
+                                   value="{{ education.start_date|date:'Y-m-d' }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="end_date">End Date</label>
+                            <input type="date" class="form-control personal_text" name="end_date" id="end_date"
+                                   value="{{ education.end_date|date:'Y-m-d' }}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 delete_btn">
+                        <div class="form-group mt-2">
+                            <a href="/delete_education/{{education.id}}/"
+                               class="btn btn-danger mt-2 delete_btn">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div id="row-container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="course_type">Course Type</label>
+                            <input type="text" class="form-control personal_text" name="course_type" id="course_type"
+                                   placeholder="Course Type"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="institute_name">Institute Name</label>
+                            <input type="text" class="form-control personal_text" name="institute_name"
+                                   id="institute_name" placeholder="Institute Name"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="branch">Branch</label>
+                            <input type="text" class="form-control personal_text" name="branch" id="branch"
+                                   placeholder="Branch name"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="start_date">Start Date</label>
+                            <input type="date" class="form-control personal_text" name="start_date" id="start_date"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="end_date">End Date</label>
+                            <input type="date" class="form-control personal_text" name="end_date" id="end_date"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--        EDIT AND UPDATE BUTTONS       -->
+        <div class="row mb-2 d-flex justify-content-center">
+            <div class="col">
+            </div>
+            <div class="col order-12">
+                <div class="d-flex flex-row">
+                    <div class="p-2">
+                        <input type="button" class="btn btn-primary"  value="Edit" id="edit_btn">
+                    </div>
+                              <div class="p-2">
+                        <input type="submit"  class="btn btn-success" value="Update" id="submit_btn">
+                    </div>
+                    <div class="p-2">
+                        <button type="button"  class="btn btn-danger" id="cancel_btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col order-1">
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <div class="row ">
+        <div class="col-12 mt-2">
+            Search Offender Profile to get data
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <!--            empty row to display some space -->
+    </div>
+</div>
+<script>
+    var row = $('#row-container .row:eq(0)').clone();
+    $('#addButton').data('row',row);
+    $('#addButton').click(function(){
+    $('#row-container').append($(this).data('row').clone());
+    });
+    $('#removeButton').click(function(){
+    $('#row-container .row').eq(  $('#row-container .row').length-1 ).remove();
+    });
+
+     $(document).ready(function(){
+    $(".personal_text").prop("disabled",true);
+    $("#submit_btn").hide();
+    $(".delete_btn").hide();
+    $("#edit_btn").click(function(){
+        $(".personal_text").prop("disabled",false);
+        $("#submit_btn").show();
+        $("#edit_btn").hide();
+        $(".delete_btn").show();
+    });
+    $("#cancel_btn").click(function(){
+        $("#submit_btn").hide();
+        $("#edit_btn").show();
+        $(".delete_btn").hide();
+        $(".personal_text").prop("disabled",true);
+    });
+ });
+</script>
+{% endblock %}

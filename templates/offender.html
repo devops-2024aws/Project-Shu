@@ -1,0 +1,63 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+{% include 'toast_msg.html' %}
+<div class="d-flex bd-highlight">
+    <div class="p-2 w-100 bd-highlight"></div>
+    <form action="{% url 'get_personal_information' %}" method="post" class="form-signin">
+        {% csrf_token %}
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <input type="text" class="form-control" placeholder="Search.." name="offender_id">
+            </div>
+            <div class="p-2">
+                <button class="btn btn-info">search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="d-flex bd-highlight">
+    <div class="p-2 w-100 bd-highlight"><h1>Offender Details</h1></div>
+    <div class="p-2 flex-shrink-1 bd-highlight">
+        <a href="/create_offender/">
+            <button type="button" class="btn btn-primary">Add Offender</button>
+        </a>
+    </div>
+</div>
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Offender ID</th>
+        <th scope="col">FirstName</th>
+        <th scope="col">LastName</th>
+        <th scope="col">Gender</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for offender in offender_queryset %}
+    <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>
+            <form action="{% url 'get_personal_information' %}" method="POST"
+                  id="customer_get_{{ offender.offender_id }}"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                <input id="search_customer_id" type="text" class="form-control"
+                       value="{{offender.offender_id}}"
+                       name="offender_id" hidden>
+                <a onclick="document.getElementById('customer_get_{{ offender.offender_id }}').submit(); return false;"
+                   style="color:blue;">
+                    {{ offender.offender_id }}
+                </a>
+            </form>
+
+        </td>
+        <td>{{ offender.first_name }}</td>
+        <td>{{ offender.last_name }}</td>
+        <td>{{ offender.gender }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
